@@ -54,12 +54,15 @@ class ExplorationEngine:
 
 		while not self._isExplorationComplete():
 			selected = self.constraints_to_solve.popleft()
+			# print(f"selected: {selected}")
+
 			if selected.processed:
 				continue
 			self._setInputs(selected.inputs)			
 
 			log.info("Selected constraint %s" % selected)
 			asserts, query = selected.getAssertsAndQuery()
+
 			model = self.solver.findCounterexample(asserts, query)
 
 			if model == None:
@@ -92,6 +95,7 @@ class ExplorationEngine:
 
 	def _isExplorationComplete(self):
 		num_constr = len(self.constraints_to_solve)
+		# print(self.constraints_to_solve)
 		if num_constr == 0:
 			log.info("Exploration complete")
 			return True
