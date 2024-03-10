@@ -83,3 +83,29 @@ class PathToConstraint:
 		edges = [ "C" + str(c.id) + " -> " + "C" + str(child.id) + ";\n" for child in c.children ]
 		return node + "".join(edges) + "".join([ self._toDot(child) for child in c.children ])
 		
+	def printAllPaths(self):
+		paths = []
+		all_paths = self._collectPaths(self.root_constraint, [], paths)
+		
+		header = f"{len(all_paths)} paths exist\n"
+		return header + "".join(f"{path}\n" for path in all_paths)
+
+			
+	def _collectPaths(self, c:Constraint, current_path:list, all_paths:list):
+		if (c.parent is None):
+			label = "root"
+		else:
+			label = c.predicate.symtype.toString()
+			if not c.predicate.result:
+				label = "Not("+label+")"
+		current_path.append(label)
+		# print(f"Processing node {label}, current path: {current_path}, all paths: {all_paths}")
+		if len(c.children) == 0 :
+			all_paths.append(current_path)
+		elif len(c.children) == 1:
+			child = c.children[0]
+			self._collectPaths(child, current_path, all_paths)
+		else:
+			for child in c.children:
+				self._collectPaths(child, current_path.copy(), all_paths)
+		return all_paths

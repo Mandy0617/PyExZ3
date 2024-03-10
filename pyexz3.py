@@ -55,7 +55,9 @@ try:
 	if (options.dot_graph):
 		file = open(filename+".dot","w")
 		print(f"Path to DOT: {path.toDot()}")
-		file.write(path.toDot())	
+		print(path.printAllPaths)
+		file.write(path.toDot())
+		file.write(path.printAllPaths())
 		file.close()
 
 except ImportError as e:

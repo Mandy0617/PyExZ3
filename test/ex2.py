@@ -1,7 +1,7 @@
-from symbolic.args import *
+# from symbolic.args import *
 
-@concrete(x = 0,y = 0 ) 
-@symbolic(a=1,b=0,c=0) 
+# @concrete(x = 0,y = 0 ) 
+# @symbolic(a=1,b=0,c=0) 
 def ex2(a,b,c,x,y):
 
     if a > 0 :
@@ -16,5 +16,5 @@ def ex2(a,b,c,x,y):
             if c == 0:
                 y = y + 3
     
-    # assert x + y != 8
+    assert x + y != 8
     
