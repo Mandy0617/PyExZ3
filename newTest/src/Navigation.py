@@ -1,12 +1,12 @@
-# import random
-# from symbolic.args import *
+import random
+from symbolic.args import *
 
 WIDTH = 10
 HEIGHT = 10
 
-# @symbolic(x=0,y=0,d = random.choice((1, 2, 3, 4)),v = random.randint(0, 10))
+@symbolic(x=0,y=0,d = random.choice((1, 2, 3, 4)),v = random.randint(0, 10))
 # @concrete(d = random.choice((1, 2, 3, 4)), v = random.uniform(0, 1))
-def Navigation(x:float,y:float, d:int,v:float):
+def Navigation(x,y, d,v):
     # state = [x,y]
     action = [d,v]
     # x = state[0]

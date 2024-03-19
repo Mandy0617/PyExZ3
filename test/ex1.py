@@ -1,15 +1,15 @@
-# from symbolic.args import *
+from symbolic.args import *
 import random
 
-# @symbolic(x) 
-def ex1(x:float):
+@symbolic(x = -2) 
+def ex1(x):
 
 
-    if x == 0: return 0
+    if 0<=x<= 10: return 0
 
-    y = random.uniform(0,1)
+    elif 10<x<30: return 1
 
-    if x*y == 1: 
-        return -1
-    else: 
-        return 1
+    elif -10<x<0: return -1
+
+    else: return -18
+

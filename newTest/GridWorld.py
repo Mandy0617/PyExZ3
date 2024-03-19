@@ -1,6 +1,8 @@
 
 #source: https://github.com/SRJaffry/GridWorld_Environment
 
+import numpy as np
+
 class GridWorld_Env:
     def __init__(self, hor, ver):
         self.actions = ["left", "up", "right", "down"] # 0=Left, 1=Up, 2=right, 3=Down 

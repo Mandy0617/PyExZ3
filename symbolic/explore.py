@@ -29,6 +29,7 @@ class ExplorationEngine:
 
 		if solver == "z3":
 			self.solver = Z3Wrapper()
+		
 		elif solver == "cvc":
 			from .cvc_wrap import CVCWrapper
 			self.solver = CVCWrapper()

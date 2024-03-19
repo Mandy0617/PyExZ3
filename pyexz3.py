@@ -35,6 +35,8 @@ if len(args) == 0 or not os.path.exists(args[0]):
 solver = "cvc" if options.cvc else "z3"
 
 filename = os.path.abspath(args[0])
+
+explore_repeat = int(args[1]) if len(args) > 1 else 1 # add a argument to specify the times of repeat explore 
 	
 # Get the object describing the application
 app = loaderFactory(filename,options.entry)
@@ -45,12 +47,24 @@ print ("Exploring " + app.getFile() + "." + app.getEntry())
 
 result = None
 try:
-	engine = ExplorationEngine(app.createInvocation(), solver=solver)
-	generatedInputs, returnVals, path = engine.explore(options.max_iters)
+	i = 0
+	input_file = open(filename+"_"+str(explore_repeat)+"_input.csv","w")
 
-	# check the result
-	result = app.executionComplete(returnVals)
+	while(i < explore_repeat):
+		engine = ExplorationEngine(app.createInvocation(), solver=solver)
 
+		generatedInputs, returnVals, path = engine.explore(options.max_iters)
+		for input in generatedInputs:
+			formatted_line = ', '.join([str(tuple_[1]) for tuple_ in input])
+			input_file.write(formatted_line + '\n')
+
+		i+=1
+
+		# check the result
+		result = app.executionComplete(returnVals)
+
+	
+	input_file.close()
 	# output DOT graph
 	if (options.dot_graph):
 		file = open(filename+".dot","w")

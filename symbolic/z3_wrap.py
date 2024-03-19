@@ -1,5 +1,6 @@
 # Copyright: see copyright.txt
 
+import random
 import sys
 import ast
 import logging
@@ -18,10 +19,14 @@ class Z3Wrapper(object):
 		self.use_lia = True
 		self.z3_expr = None
 
+		#set ramdom seed for the solver, make sure it returns different values as much as possible
+		# set_param('smt.random_seed', 31) 
+
 	def findCounterexample(self, asserts, query):
 		"""Tries to find a counterexample to the query while
 	  	 asserts remains valid."""
 		self.solver = Solver()
+
 		self.query = query
 		self.asserts = self._coneOfInfluence(asserts,query)
 		res = self._findModel()

@@ -1,9 +1,11 @@
 from symbolic.args import *
 
-@symbolic(x=0) 
+@symbolic(x=False) 
 def ex3(x):
 
-    if x == 0: return 0
+    if x==True: return 0
 
-    else: 
+    elif x == False: 
         return -1
+    else:
+        return -2

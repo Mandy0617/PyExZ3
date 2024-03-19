@@ -2,19 +2,20 @@
 
 # @concrete(x = 0,y = 0 ) 
 # @symbolic(a=1,b=0,c=0) 
-def ex2(a,b,c,x,y):
+from symbolic.args import *
+import random
 
-    if a > 0 :
-        while y < a :
-            y = y + 1
-    else:
-        y = 7
-        if(b > 0 and b < 9):
-            x = 1
-        else:
-            x = 2
-            if c == 0:
-                y = y + 3
-    
-    assert x + y != 8
+# @symbolic(x = -2) 
+def ex2(x,y,a,b):
+
+
+    if 0<=x+y<= 10: return 0
+
+    elif 10<x-b<30: return 1
+
+    elif -10<y+a<0: return -1
+
+    else: return -18
+
+
     
