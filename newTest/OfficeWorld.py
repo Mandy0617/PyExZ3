@@ -44,6 +44,8 @@ def OfficeWorld (a,b,has_coffee, has_mail, action):
         forbidden_transitions = set()
 
         buildforbidden(forbidden_transitions)
+
+        print(forbidden_transitions)
         current_loc = (2,1)
         reward  = None # the episode's reward (-100 for pitfall, 0 for reaching the goal, and -1 otherwise)
         flag = False # termination flag is true if the agent falls in a pitfall or reaches to the goal

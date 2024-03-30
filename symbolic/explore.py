@@ -29,7 +29,7 @@ class ExplorationEngine:
 
 		if solver == "z3":
 			self.solver = Z3Wrapper()
-		
+			
 		elif solver == "cvc":
 			from .cvc_wrap import CVCWrapper
 			self.solver = CVCWrapper()
@@ -40,12 +40,28 @@ class ExplorationEngine:
 		self.generated_inputs = []
 		self.execution_return_values = []
 
+		self.additional_inputs = []
+
+	def generateAdditionalInputs(self,additional_models):
+		for add_model in additional_models:
+			if add_model == None:
+				continue
+			else:
+				for name in add_model.keys():
+					self._updateSymbolicParameter(name,add_model[name])
+					args = self.symbolic_inputs
+					inputs = [ (k,self._getConcrValue(args[k])) for k in args ]
+					self.additional_inputs.append(inputs)
+
+
 	def addConstraint(self, constraint):
 		self.constraints_to_solve.append(constraint)
 		# make sure to remember the input that led to this constraint
 		constraint.inputs = self._getInputs()
 
-	def explore(self, max_iterations=0):
+
+	def explore(self, max_iterations=0, explore_repeat = 1):
+
 		self._oneExecution()
 		
 		iterations = 1
@@ -64,15 +80,18 @@ class ExplorationEngine:
 			log.info("Selected constraint %s" % selected)
 			asserts, query = selected.getAssertsAndQuery()
 
-			model = self.solver.findCounterexample(asserts, query)
+			model, additonal_models = self.solver.findCounterexample(asserts, query, explore_repeat)
 
 			if model == None:
 				continue
 			else:
+
 				for name in model.keys():
 					self._updateSymbolicParameter(name,model[name])
 
 			self._oneExecution(selected)
+
+			self.generateAdditionalInputs(additonal_models)
 
 			iterations += 1			
 			self.num_processed_constraints += 1
@@ -81,7 +100,48 @@ class ExplorationEngine:
 				log.info("Maximum number of iterations reached, terminating")
 				break
 
-		return self.generated_inputs, self.execution_return_values, self.path
+		return self.generated_inputs, self.execution_return_values, self.path, self.additional_inputs
+
+
+
+
+	# def explore(self, max_iterations=0):
+	# 	self._oneExecution()
+		
+	# 	iterations = 1
+	# 	if max_iterations != 0 and iterations >= max_iterations:
+	# 		log.debug("Maximum number of iterations reached, terminating")
+	# 		return self.execution_return_values
+
+	# 	while not self._isExplorationComplete():
+	# 		selected = self.constraints_to_solve.popleft()
+	# 		# print(f"selected: {selected}")
+
+	# 		if selected.processed:
+	# 			continue
+	# 		self._setInputs(selected.inputs)			
+
+	# 		log.info("Selected constraint %s" % selected)
+	# 		asserts, query = selected.getAssertsAndQuery()
+
+	# 		model = self.solver.findCounterexample(asserts, query)
+
+	# 		if model == None:
+	# 			continue
+	# 		else:
+	# 			for name in model.keys():
+	# 				self._updateSymbolicParameter(name,model[name])
+
+	# 		self._oneExecution(selected)
+
+	# 		iterations += 1			
+	# 		self.num_processed_constraints += 1
+
+	# 		if max_iterations != 0 and iterations >= max_iterations:
+	# 			log.info("Maximum number of iterations reached, terminating")
+	# 			break
+
+	# 	return self.generated_inputs, self.execution_return_values, self.path
 
 	# private
 

@@ -1,5 +1,6 @@
 # Copyright: see copyright.txt
 
+
 import os
 import sys
 import logging
@@ -8,6 +9,18 @@ from optparse import OptionParser
 
 from symbolic.loader import *
 from symbolic.explore import ExplorationEngine
+
+
+def generate_input_file(input_file, generatedInputs, additionalInputs):
+
+	for input in generatedInputs:
+		formatted_line = ', '.join([str(tuple_[1]) for tuple_ in input])
+		input_file.write(formatted_line + '\n')
+	
+	for input in additionalInputs:
+		formatted_line = ', '.join([str(tuple_[1]) for tuple_ in input])
+		input_file.write(formatted_line + '\n')
+
 
 print("PyExZ3 (Python Exploration with Z3)")
 
@@ -47,23 +60,18 @@ print ("Exploring " + app.getFile() + "." + app.getEntry())
 
 result = None
 try:
-	i = 0
+
 	input_file = open(filename+"_"+str(explore_repeat)+"_input.csv","w")
 
-	while(i < explore_repeat):
-		engine = ExplorationEngine(app.createInvocation(), solver=solver)
+	engine = ExplorationEngine(app.createInvocation(), solver=solver)
 
-		generatedInputs, returnVals, path = engine.explore(options.max_iters)
-		for input in generatedInputs:
-			formatted_line = ', '.join([str(tuple_[1]) for tuple_ in input])
-			input_file.write(formatted_line + '\n')
+	generatedInputs, returnVals, path, additionalInputs = engine.explore(options.max_iters,explore_repeat)
 
-		i+=1
+	# check the result
+	result = app.executionComplete(returnVals)
 
-		# check the result
-		result = app.executionComplete(returnVals)
-
-	
+	generate_input_file(input_file,generatedInputs,additionalInputs)
+		
 	input_file.close()
 	# output DOT graph
 	if (options.dot_graph):
